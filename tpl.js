@@ -4,7 +4,7 @@
  * Uses UnderscoreJS micro-templates : http://documentcloud.github.com/underscore/#template
  * @author Julien Cabanès <julien@zeeagency.com>
  * @version 0.2
- * 
+ *
  * @license RequireJS text 0.24.0 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
@@ -17,15 +17,15 @@
 (function () {
 //>>excludeStart('excludeTpl', pragmas.excludeTpl)
 	var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
-	
+
 		xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
-		
+
 		bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
-		
+
 		buildMap = [],
-		
+
 		templateSettings = {
-			evaluate	: /<%([\s\S]+?)%>/g,
+			evaluate	: /(?:\n\s*<%|<%)([\s\S]+?)%>/g,
 			interpolate : /<%=([\s\S]+?)%>/g
 		},
 
@@ -52,7 +52,7 @@
 					.replace(/\t/g, '')
 					+ "');}return __p.join('');";
 			return tmpl;
-			
+
 			/** /
 			var func = new Function('obj', tmpl);
 			return data ? func(data) : func;
@@ -67,7 +67,7 @@
 		var get, fs;
 		if (typeof window !== "undefined" && window.navigator && window.document) {
 			get = function (url, callback) {
-				
+
 				var xhr = tpl.createXhr();
 				xhr.open('GET', url, true);
 				xhr.onreadystatechange = function (evt) {
@@ -86,7 +86,7 @@
 			fs = require.nodeRequire('fs');
 
 			get = function (url, callback) {
-				
+
 				callback(fs.readFileSync(url, 'utf8'));
 			};
 		}
@@ -105,7 +105,7 @@
 				} else {
 					content = "";
 				}
-				
+
 				return content;
 			},
 
@@ -147,7 +147,7 @@
 			get: get,
 
 			load: function (name, req, onLoad, config) {
-				
+
 				//Name has format: some.module.filext!strip
 				//The strip part is optional.
 				//if strip is present, then that means only get the string contents
@@ -160,7 +160,7 @@
 					ext = name.substring(index + 1, name.length);
 
 				index = ext.indexOf("!");
-				
+
 				if (index !== -1) {
 					//Pull off the strip arg.
 					strip = ext.substring(index + 1, ext.length);
@@ -170,16 +170,16 @@
 
 				//Load the tpl.
 				url = 'nameToUrl' in req ? req.nameToUrl(modName, "." + ext) : req.toUrl(modName + "." + ext);
-				
+
 				tpl.get(url, function (content) {
 					content = template(content);
-					
+
 					if(!config.isBuild) {
 					//if(typeof window !== "undefined" && window.navigator && window.document) {
 						content = new Function('obj', content);
 					}
 					content = strip ? tpl.strip(content) : content;
-					
+
 					if (config.isBuild && config.inlineText) {
 						buildMap[name] = content;
 					}
@@ -199,7 +199,7 @@
 			}
 		};
 //>>excludeEnd('excludeTpl')
-		return function() {};	
+		return function() {};
 	});
 //>>excludeEnd('excludeTpl')
 }());
