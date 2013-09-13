@@ -25,7 +25,7 @@
 		buildMap = [],
 
 		templateSettings = {
-			evaluate	: /(?:\n\s*<%|<%)([\s\S]+?)%>/g,
+			evaluate	: /<%([\s\S]+?)%>/g,
 			interpolate : /<%=([\s\S]+?)%>/g
 		},
 
@@ -38,7 +38,8 @@
 			var c  = templateSettings;
 			var tmpl = 'var __p=[],print=function(){__p.push.apply(__p,arguments);};' +
 				'with(obj||{}){__p.push(\'' +
-				str.replace(/\\/g, '\\\\')
+				str.replace(/\s\s+/g, '')
+					.replace(/\\/g, '\\\\')
 					.replace(/'/g, "\\'")
 					.replace(c.interpolate, function(match, code) {
 					return "'," + code.replace(/\\'/g, "'") + ",'";
